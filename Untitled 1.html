@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fancy Dark CPS Test</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #121212, #242424);
+            color: white;
+            text-align: center;
+            transition: background 1s ease-in-out;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        label {
+            font-size: 20px;
+        }
+        input {
+            font-size: 20px;
+            padding: 8px;
+            margin: 15px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            background: #333;
+            color: white;
+            font-weight: bold;
+            transition: background 0.3s ease-in-out;
+        }
+        input:focus {
+            outline: none;
+            background: #444;
+        }
+        #clickButton {
+            width: 320px;
+            height: 130px;
+            background: linear-gradient(135deg, #1c1c1c, #333);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 4px solid white;
+            transition: transform 0.2s ease-in-out, border 0.5s, box-shadow 0.5s;
+            box-shadow: 0px 5px 20px rgba(255, 255, 255, 0.3);
+        }
+        #clickButton:hover {
+            transform: scale(1.08);
+            box-shadow: 0px 8px 25px rgba(255, 255, 255, 0.4);
+        }
+        #clickButton:active {
+            transform: scale(0.95);
+        }
+        .activeTest {
+            border: 4px solid #28a745 !important;
+            box-shadow: 0px 8px 25px rgba(40, 167, 69, 0.5);
+        }
+        .endedTest {
+            border: 4px solid #dc3545 !important;
+            box-shadow: 0px 8px 25px rgba(220, 53, 69, 0.5);
+        }
+        #result {
+            font-size: 22px;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #countdown {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fancy Dark Mode CPS Test</h1>
+    <label for="duration">Set test duration (seconds):</label>
+    <input type="number" id="duration" value="5">
+    <button id="clickButton" onclick="registerClick()">Click Me!</button>
+    <p id="countdown">Time Left: </p>
+    <p id="result"></p>
+
+    <script>
+        let clicks = 0;
+        let timeLeft = 0;
+        let interval;
+        let testStarted = false;
+
+        function registerClick() {
+            if (!testStarted) {
+                startTest();
+            }
+            if (timeLeft > 0) {
+                clicks++;
+            }
+        }
+
+        function startTest() {
+            testStarted = true;
+            clicks = 0;
+            timeLeft = parseInt(document.getElementById('duration').value) || 5;
+            document.getElementById("result").style.opacity = "0";
+            document.getElementById("countdown").style.opacity = "1";
+            document.getElementById("clickButton").classList.add("activeTest");
+            updateCountdown(); // Start displaying time immediately
+
+            interval = setInterval(() => {
+                timeLeft--;
+                updateCountdown(); 
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    const cps = (clicks / parseInt(document.getElementById('duration').value)).toFixed(2);
+                    document.getElementById("result").innerText = `Your CPS: ${cps}`;
+                    document.getElementById("result").style.opacity = "1";
+                    document.getElementById("countdown").style.opacity = "0";
+                    document.getElementById("clickButton").classList.remove("activeTest");
+                    document.getElementById("clickButton").classList.add("endedTest");
+                    testStarted = false;
+                }
+            }, 1000);
+        }
+
+        function updateCountdown() {
+            document.getElementById("countdown").innerText = `Time Left: ${timeLeft}s`;
+        }
+    </script>
+</body>
+</html>
